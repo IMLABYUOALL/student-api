@@ -2,6 +2,7 @@ console.log("Starting server...");
 
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/auth');
@@ -9,18 +10,22 @@ const studentRoutes = require('./routes/students');
 
 const app = express();
 
-app.use(express.json()); 
-
+// Middleware
+app.use(express.json());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174']
+}));
+// Routes (Inayos ko na para walang doble)
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
-app.use('/api/auth', require('./routes/auth'));
 
-mongoose.connect("mongodb+srv://archiecolinares_db_user:PAKIDIT123@cluster0.vdc7s1m.mongodb.net/studentdb?retryWrites=true&w=majority")
+// Database Connection at Server Start
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
   })
   .catch(err => {
     console.error('--- DB CONNECTION ERROR ---');
-    console.error(err.message); 
+    console.error(err.message);
   });

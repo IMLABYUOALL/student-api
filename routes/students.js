@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Student = require('../models/Student'); // Siguraduhing Student (may capital S) at tama ang path
+const Student = require('../models/Student'); // Dapat walang .js sa dulo
 const requireAuth = require('../middleware/auth');
-
 // GET all students (Protected)
 router.get('/', requireAuth, async (req, res) => {
     try {
